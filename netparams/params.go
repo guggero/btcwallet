@@ -37,3 +37,11 @@ var SimNetParams = Params{
 	RPCClientPort: "18556",
 	RPCServerPort: "18554",
 }
+
+// SigNetParams contains parameters specific to the signet test network
+// (wire.SigNet).
+var SigNetParams = Params{
+	Params:        &chaincfg.SigNetParams,
+	RPCClientPort: "38334",
+	RPCServerPort: "38332",
+}

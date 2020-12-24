@@ -483,6 +483,8 @@ func (net *netParams) ReadFrom(r io.Reader) (int64, error) {
 		*net = (netParams)(chaincfg.TestNet3Params)
 	case wire.SimNet:
 		*net = (netParams)(chaincfg.SimNetParams)
+	case wire.SigNet:
+		*net = (netParams)(chaincfg.SigNetParams)
 	default:
 		return n64, errors.New("unknown network")
 	}
