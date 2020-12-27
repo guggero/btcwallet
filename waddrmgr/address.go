@@ -10,6 +10,7 @@ import (
 	"sync"
 
 	"github.com/btcsuite/btcd/btcec"
+	"github.com/btcsuite/btcd/btctr"
 	"github.com/btcsuite/btcd/txscript"
 	"github.com/btcsuite/btcutil"
 	"github.com/btcsuite/btcutil/hdkeychain"
@@ -47,6 +48,9 @@ const (
 	// WitnessPubKey represents a p2wkh (pay-to-witness-key-hash) address
 	// type.
 	WitnessPubKey
+
+	// TaprootPubkey represents a p2tr (pay-to-taproot) address type.
+	TaprootPubkey
 )
 
 // ManagedAddress is an interface that provides acces to information regarding
@@ -258,6 +262,9 @@ func (a *managedAddress) PubKey() *btcec.PublicKey {
 // pubKeyBytes returns the serialized public key bytes for the managed address
 // based on whether or not the managed address is marked as compressed.
 func (a *managedAddress) pubKeyBytes() []byte {
+	if a.addrType == TaprootPubkey {
+		return a.pubKey.SerializeCompact()
+	}
 	if a.compressed {
 		return a.pubKey.SerializeCompressed()
 	}
@@ -400,6 +407,18 @@ func newManagedAddressWithoutPrivKey(m *ScopedKeyManager,
 	case WitnessPubKey:
 		address, err = btcutil.NewAddressWitnessPubKeyHash(
 			pubKeyHash, m.rootManager.chainParams,
+		)
+		if err != nil {
+			return nil, err
+		}
+
+	case TaprootPubkey:
+		tapKey, err := btctr.TapConstruct(pubKey, nil)
+		if err != nil {
+			return nil, err
+		}
+		address, err = btcutil.NewAddressTaproot(
+			tapKey.SerializeCompact(), m.rootManager.chainParams,
 		)
 		if err != nil {
 			return nil, err

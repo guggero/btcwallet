@@ -98,6 +98,13 @@ var (
 		Coin:    0,
 	}
 
+	// KeyScopeBIP0341 is the key scope for BIP0341 derivation. BIP0341
+	// will be used to derive all p2tr addresses.
+	KeyScopeBIP0341 = KeyScope{
+		Purpose: 341,
+		Coin:    0,
+	}
+	
 	// KeyScopeBIP0044 is the key scope for BIP0044 derivation. Legacy
 	// wallets will only be able to use this key scope, and no keys beyond
 	// it.
@@ -111,6 +118,7 @@ var (
 	DefaultKeyScopes = []KeyScope{
 		KeyScopeBIP0049Plus,
 		KeyScopeBIP0084,
+		KeyScopeBIP0341,
 		KeyScopeBIP0044,
 	}
 
@@ -125,6 +133,10 @@ var (
 		KeyScopeBIP0084: {
 			ExternalAddrType: WitnessPubKey,
 			InternalAddrType: WitnessPubKey,
+		},
+		KeyScopeBIP0341: {
+			ExternalAddrType: TaprootPubkey,
+			InternalAddrType: TaprootPubkey,
 		},
 		KeyScopeBIP0044: {
 			InternalAddrType: PubKeyHash,
